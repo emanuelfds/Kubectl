@@ -43,7 +43,7 @@ jobs:
       - name: Show extracted tag
         run: echo "Extracted tag is ${{ steps.extract_tag.outputs.tag }}"
 
-      - name: Build and Push Docker Image
+      - name: Build and Push Image to Docker Hub
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -51,7 +51,7 @@ jobs:
           push: true
           tags: emanuelfds/kubectl:${{ steps.extract_tag.outputs.tag }}
 
-      - name: Build and Push to GitHub Container Registry
+      - name: Build and Push Image to GitHub Container Registry
         uses: docker/build-push-action@v5
         with:
           context: .
