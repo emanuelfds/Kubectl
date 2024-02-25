@@ -49,7 +49,7 @@ jobs:
           context: .
           file: ./Dockerfile  # caminho para o Dockerfile
           push: true
-          tags: emanuelfds/kubectl:1.29.2
+          tags: emanuelfds/kubectl:${{ steps.extract_tag.outputs.tag }}
 
       - name: Build and Push to GitHub Container Registry
         uses: docker/build-push-action@v5
@@ -57,4 +57,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/emanuelfds/kubectl:1.29.2
+          tags: ghcr.io/emanuelfds/kubectl:${{ steps.extract_tag.outputs.tag }}
