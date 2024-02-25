@@ -35,12 +35,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract tag from Dockerfile
-        id: extract_tag
-        run: echo "::set-output name=tag::$(grep -oP '(?<=KUBECTL_VERSION=)[0-9]+\.[0-9]+\.[0-9]+' Dockerfile)"
+      - name: Extract Kubectl version from Dockerfile
+        id: extract_kubectl_version
+        run: echo "KUBECTL_VERSION=$(grep -oP '(?<=KUBECTL_VERSION=)[0-9]+\.[0-9]+\.[0-9]+' Dockerfile)" >> $GITHUB_ENV
 
-      - name: Show extracted tag
-        run: echo "Extracted tag is ${{ steps.extract_tag.outputs.tag }}"
+      - name: Show Kubectl version
+        run: echo "Extracted version is ${{ env.KUBECTL_VERSION }}"
+
+      # - name: Extract tag from Dockerfile
+      #   id: extract_tag
+      #   run: echo "::set-output name=tag::$(grep -oP '(?<=KUBECTL_VERSION=)[0-9]+\.[0-9]+\.[0-9]+' Dockerfile)"
+
+      # - name: Show extracted tag
+      #   run: echo "Extracted tag is ${{ steps.extract_tag.outputs.tag }}"
 
       - name: Build and Push Image to Docker Hub
         uses: docker/build-push-action@v5
@@ -48,7 +55,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: emanuelfds/kubectl:${{ steps.extract_tag.outputs.tag }}
+          tags: emanuelfds/kubectl:${{ env.KUBECTL_VERSION }}
 
       - name: Build and Push Image to GitHub Container Registry
         uses: docker/build-push-action@v5
@@ -56,4 +63,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/emanuelfds/kubectl:${{ steps.extract_tag.outputs.tag }}
+          tags: ghcr.io/emanuelfds/kubectl:${{ env.KUBECTL_VERSION }}
