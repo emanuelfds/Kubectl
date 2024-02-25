@@ -36,6 +36,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Extract tag from Dockerfile
+        id: extract_tag
+        run: echo "::set-output name=tag::$(grep -oP '(?<=KUBECTL_VERSION=)[0-9]+\.[0-9]+\.[0-9]+' Dockerfile)"
+
+      - name: Show extracted tag
+        run: echo "Extracted tag is ${{ steps.extract_tag.outputs.tag }}"
+
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
