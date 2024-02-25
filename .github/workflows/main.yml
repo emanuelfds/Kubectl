@@ -7,7 +7,6 @@ on:
 
 permissions: write-all
 
-
 jobs:
   login-repo:
     name: Build and Push Image in Docker Hub and GitHub Container Registry
@@ -47,7 +46,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile  # caminho para o Dockerfile
+          file: ./Dockerfile
           push: true
           tags: emanuelfds/kubectl:${{ steps.extract_tag.outputs.tag }}
 
