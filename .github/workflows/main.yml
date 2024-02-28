@@ -67,6 +67,7 @@ jobs:
 
   trivy-scanning:
     name: Trivy Scanner
+    needs: login-repo
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
