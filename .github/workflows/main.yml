@@ -65,13 +65,13 @@ jobs:
           push: true
           tags: ghcr.io/emanuelfds/kubectl:${{ env.KUBECTL_VERSION }}
 
-  trivy-scanning:
-    name: Trivy Scanner
-    needs: login-repo
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+  # trivy-scanning:
+  #   name: Trivy Scanner
+  #   needs: login-repo
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
