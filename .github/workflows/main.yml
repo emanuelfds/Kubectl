@@ -84,7 +84,7 @@ jobs:
       - name: Trivy Scan Docker Hub
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'emanuelfds/kubectl:${{ KUBECTL_VERSION }}'
+          image-ref: 'emanuelfds/kubectl:$KUBECTL_VERSION'
           # format: 'table'
           format: 'sarif'
           output: 'trivy-results.sarif'
