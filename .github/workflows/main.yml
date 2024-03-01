@@ -1,120 +1,25 @@
-name: Build Kubectl
+name: Workflow Outputs
 
 on:
-  push:
-    branches: [ "main" ]
-    tags: [ "v*" ]
-
-permissions: write-all
+  workflow_dispatch:
 
 jobs:
-  login-repo:
-    name: Build and Push Image in Docker Hub and GitHub Container Registry
+
+  job1:
     runs-on: ubuntu-latest
-
+    # Map a step output to a job output
+    outputs:
+      output1: ${{ steps.step1.outputs.test }}
+      output2: ${{ steps.step2.outputs.test }}
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+    - id: step1
+      run: echo "::set-output name=test::hello"
+    - id: step2
+      run: echo "::set-output name=test::world"
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract Kubectl version from Dockerfile
-        id: extract_kubectl_version
-        run: echo "KUBECTL_VERSION=$(grep -oP '(?<=KUBECTL_VERSION=)[0-9]+\.[0-9]+\.[0-9]+' Dockerfile)" >> $GITHUB_ENV
-
-      - name: Show Kubectl version
-        run: |
-          echo "Extracted version is ${{ env.KUBECTL_VERSION }}"
-          echo "$KUBECTL_VERSION" > $GITHUB_WORKSPACE/kubectl_version.txt
-
-      # - name: Extract tag from Dockerfile
-      #   id: extract_tag
-      #   run: echo "::set-output name=tag::$(grep -oP '(?<=KUBECTL_VERSION=)[0-9]+\.[0-9]+\.[0-9]+' Dockerfile)"
-
-      # - name: Show extracted tag
-      #   run: echo "Extracted tag is ${{ steps.extract_tag.outputs.tag }}"
-
-      - name: Build and Push Image to Docker Hub
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: emanuelfds/kubectl:${{ env.KUBECTL_VERSION }}
-
-      - name: Build and Push Image to GitHub Container Registry
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ghcr.io/emanuelfds/kubectl:${{ env.KUBECTL_VERSION }}
-
-  trivy-scanning:
-    name: Trivy Scanner
-    needs: login-repo
+  job2:
     runs-on: ubuntu-latest
+    # Wait from the job1 to be completed before starting job2
+    needs: job1
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Read kubectl version from artifact
-        id: read_kubectl_version
-        run: |
-          KUBECTL_VERSION=$(cat ${{ github.workspace }}/kubectl_version.txt)
-          echo "Kubectl version from artifact: $KUBECTL_VERSION"
-          
-      - name: Trivy Scan Docker Hub
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'emanuelfds/kubectl:$KUBECTL_VERSION'
-          # format: 'table'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          # if 'exit-code: 1' your pipeline will be interrupted
-          exit-code: '0'    
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH,MEDIUM'
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
-
-      # - name: Trivy Scan GitHub Container Registry
-      #   uses: aquasecurity/trivy-action@master
-      #   with:
-      #     image-ref: 'ghcr.io/emanuelfds/kubectl:${{ env.KUBECTL_VERSION }}'
-      #     # format: 'table'
-      #     format: 'sarif'
-      #     output: 'trivy-results.sarif'
-      #     # if 'exit-code: 1' your pipeline will be interrupted
-      #     exit-code: '0'    
-      #     ignore-unfixed: true
-      #     vuln-type: 'os,library'
-      #     severity: 'CRITICAL,HIGH,MEDIUM'
-
-      # - name: Upload Trivy scan results to GitHub Security tab
-      #   uses: github/codeql-action/upload-sarif@v3
-      #   if: always()
-      #   with:
-      #     sarif_file: 'trivy-results.sarif'
+    - run: echo ${{needs.job1.outputs.output1}} ${{needs.job1.outputs.output2}}
