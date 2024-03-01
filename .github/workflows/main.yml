@@ -42,7 +42,7 @@ jobs:
       - name: Show Kubectl version
         run: |
           echo "Extracted version is ${{ env.KUBECTL_VERSION }}"
-          echo "$KUBECTL_VERSION" > kubectl_version.txt
+          echo "$KUBECTL_VERSION" > $GITHUB_WORKSPACE/kubectl_version.txt
 
       # - name: Extract tag from Dockerfile
       #   id: extract_tag
@@ -78,7 +78,7 @@ jobs:
       - name: Read kubectl version from artifact
         id: read_kubectl_version
         run: |
-          KUBECTL_VERSION=$(cat kubectl_version.txt)
+          KUBECTL_VERSION=$(cat ${{ github.workspace }}/kubectl_version.txt)
           echo "Kubectl version from artifact: $KUBECTL_VERSION"
           
       - name: Trivy Scan Docker Hub
