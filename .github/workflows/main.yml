@@ -7,19 +7,20 @@ jobs:
 
   job1:
     runs-on: ubuntu-latest
-    # Map a step output to a job output
-    outputs:
-      output1: ${{ steps.step1.outputs.test }}
-      output2: ${{ steps.step2.outputs.test }}
+    # Define environment variables
+    env:
+      OUTPUT1: hello
+      OUTPUT2: world
     steps:
-    - id: step1
-      run: echo "test=hello" >> $GITHUB_ENV
-    - id: step2
-      run: echo "test=world" >> $GITHUB_ENV
+    - name: Output variable1
+      run: echo "OUTPUT1=${OUTPUT1}" >> $GITHUB_ENV
+    - name: Output variable2
+      run: echo "OUTPUT2=${OUTPUT2}" >> $GITHUB_ENV
 
   job2:
     runs-on: ubuntu-latest
     # Wait from the job1 to be completed before starting job2
     needs: job1
     steps:
-    - run: echo ${{ env.output1 }} ${{ env.output2 }}
+    - name: Access output variables
+      run: echo $OUTPUT1 $OUTPUT2
