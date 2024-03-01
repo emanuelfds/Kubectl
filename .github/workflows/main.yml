@@ -50,6 +50,9 @@ jobs:
     needs: build-and-push
 
     steps:
+      - name: Show Kubectl version
+        run: echo "Extracted version is ${{ env.KUBECTL_VERSION }}"
+    
       - name: Trivy Scan Docker Hub
         uses: aquasecurity/trivy-action@master
         with:
