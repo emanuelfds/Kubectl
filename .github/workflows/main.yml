@@ -44,13 +44,25 @@ jobs:
       - name: Show Kubectl version
         run: echo "Extracted version is ${{ steps.extract_kubectl_version.outputs.kubectl_version }}"
 
+      # - name: Remove Image with Latest Tag from Docker Hub
+      #   uses: docker/cli@v2
+      #   with:
+      #     args: image rm emanuelfds/kubectl:latest
+
+      # - name: Remove Image with Latest Tag from GitHub Container Registry
+      #   uses: docker/cli@v2
+      #   with:
+      #     args: image rm ghcr.io/emanuelfds/kubectl:latest
+
       - name: Build and Push Image to Docker Hub
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: emanuelfds/kubectl:${{ steps.extract_kubectl_version.outputs.kubectl_version }}
+          tags: |
+            emanuelfds/kubectl:${{ steps.extract_kubectl_version.outputs.kubectl_version }}
+            emanuelfds/kubectl:latest
 
       - name: Build and Push Image to GitHub Container Registry
         uses: docker/build-push-action@v5
@@ -58,7 +70,9 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/emanuelfds/kubectl:${{ steps.extract_kubectl_version.outputs.kubectl_version }}
+          tags: |
+            ghcr.io/emanuelfds/kubectl:${{ steps.extract_kubectl_version.outputs.kubectl_version }}
+            ghcr.io/emanuelfds/kubectl:latest        
 
   trivy-scanning-docker-hub:
     name: Trivy Scanner Docker Hub
