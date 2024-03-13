@@ -44,15 +44,15 @@ jobs:
       - name: Show Kubectl version
         run: echo "Extracted version is ${{ steps.extract_kubectl_version.outputs.kubectl_version }}"
 
-      - name: Remove Image with Latest Tag from Docker Hub
-        uses: docker/cli@v2.6.0
-        with:
-          args: image rm emanuelfds/kubectl:latest
+      # - name: Remove Image with Latest Tag from Docker Hub
+      #   uses: docker/cli@v2
+      #   with:
+      #     args: image rm emanuelfds/kubectl:latest
 
-      - name: Remove Image with Latest Tag from GitHub Container Registry
-        uses: docker/cli@v2.6.0
-        with:
-          args: image rm ghcr.io/emanuelfds/kubectl:latest
+      # - name: Remove Image with Latest Tag from GitHub Container Registry
+      #   uses: docker/cli@v2
+      #   with:
+      #     args: image rm ghcr.io/emanuelfds/kubectl:latest
 
       - name: Build and Push Image to Docker Hub
         uses: docker/build-push-action@v5
