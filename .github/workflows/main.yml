@@ -86,18 +86,19 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'emanuelfds/kubectl:${{ needs.login-repo.outputs.kubectl_version }}'
-          format: 'sarif'
-          output: 'trivy-results-docker-hub.sarif'
+          format: 'table'
+          # format: 'sarif'
+          # output: 'trivy-results-docker-hub.sarif'
           exit-code: '0'    
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH,MEDIUM'
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results-docker-hub.sarif'
+      # - name: Upload Trivy scan results to GitHub Security tab
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   if: always()
+      #   with:
+      #     sarif_file: 'trivy-results-docker-hub.sarif'
 
   trivy-scanning-ghcr:
     name: Trivy Scanner GitHub Container Registry
@@ -111,17 +112,17 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'ghcr.io/emanuelfds/kubectl:${{ needs.login-repo.outputs.kubectl_version }}'
-          # format: 'table'
-          format: 'sarif'
-          output: 'trivy-results-ghcr.sarif'
+          format: 'table'
+          # format: 'sarif'
+          # output: 'trivy-results-ghcr.sarif'
           # if 'exit-code: 1' your pipeline will be interrupted
           exit-code: '0'    
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH,MEDIUM'
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results-ghcr.sarif'
+      # - name: Upload Trivy scan results to GitHub Security tab
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   if: always()
+      #   with:
+      #     sarif_file: 'trivy-results-ghcr.sarif'
