@@ -74,7 +74,6 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'emanuelfds/kubectl:${{ needs.login-repo.outputs.kubectl_version }}'
-          # format: 'table'
           format: 'sarif'
           output: 'trivy-results-docker-hub.sarif'
           exit-code: '0'    
@@ -88,26 +87,26 @@ jobs:
         with:
           sarif_file: 'trivy-results-docker-hub.sarif'
 
-  trivy-scanning-ghcr:
-    name: Trivy Scanner GitHub Container Registry
-    needs: login-repo
-    runs-on: self-hosted
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+  # trivy-scanning-ghcr:
+  #   name: Trivy Scanner GitHub Container Registry
+  #   needs: login-repo
+  #   runs-on: self-hosted
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
   
-      - name: Trivy Scan GitHub Container Registry
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'ghcr.io/emanuelfds/kubectl:${{ needs.login-repo.outputs.kubectl_version }}'
-          format: 'table'
-          # format: 'sarif'
-          # output: 'trivy-results-ghcr.sarif'
-          # if 'exit-code: 1' your pipeline will be interrupted
-          exit-code: '0'    
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH,MEDIUM'
+  #     - name: Trivy Scan GitHub Container Registry
+  #       uses: aquasecurity/trivy-action@master
+  #       with:
+  #         image-ref: 'ghcr.io/emanuelfds/kubectl:${{ needs.login-repo.outputs.kubectl_version }}'
+  #         format: 'table'
+  #         # format: 'sarif'
+  #         # output: 'trivy-results-ghcr.sarif'
+  #         # if 'exit-code: 1' your pipeline will be interrupted
+  #         exit-code: '0'    
+  #         ignore-unfixed: true
+  #         vuln-type: 'os,library'
+  #         severity: 'CRITICAL,HIGH,MEDIUM'
 
       # - name: Upload Trivy scan results to GitHub Security tab
       #   uses: github/codeql-action/upload-sarif@v3
