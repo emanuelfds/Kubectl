@@ -60,8 +60,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ghcr.io/emanuelfds/kubectl:${{ steps.extract_kubectl_version.outputs.kubectl_version }}
-            ghcr.io/emanuelfds/kubectl:latest        
+            ghcr.io/emanuelfds/kubectl:${{ steps.extract_kubectl_version.outputs.kubectl_version }}    
 
   trivy-scanning-docker-hub:
     name: Trivy Scanner Docker Hub
@@ -75,19 +74,19 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'emanuelfds/kubectl:${{ needs.login-repo.outputs.kubectl_version }}'
-          format: 'table'
-          # format: 'sarif'
-          # output: 'trivy-results-docker-hub.sarif'
+          # format: 'table'
+          format: 'sarif'
+          output: 'trivy-results-docker-hub.sarif'
           exit-code: '0'    
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH,MEDIUM'
 
-      # - name: Upload Trivy scan results to GitHub Security tab
-      #   uses: github/codeql-action/upload-sarif@v3
-      #   if: always()
-      #   with:
-      #     sarif_file: 'trivy-results-docker-hub.sarif'
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results-docker-hub.sarif'
 
   trivy-scanning-ghcr:
     name: Trivy Scanner GitHub Container Registry
