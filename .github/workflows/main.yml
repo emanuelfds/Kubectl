@@ -9,7 +9,8 @@ permissions: write-all
 jobs:
   login-repo:
     name: Build and Push Image in Docker Hub and GitHub Container Registry
-    runs-on: self-hosted
+    # runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     outputs:
       kubectl_version: ${{ steps.extract_kubectl_version.outputs.kubectl_version }}
@@ -65,7 +66,8 @@ jobs:
   trivy-scanning-docker-hub:
     name: Trivy Scanner Docker Hub
     needs: login-repo
-    runs-on: self-hosted
+    # runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
