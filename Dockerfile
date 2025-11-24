@@ -4,7 +4,7 @@ LABEL Description="Kubernetes tools for EKS - Emanuel Fernandes"
 
 # Ignore to update versions here
 # docker build --no-cache --build-arg KUBECTL_VERSION=${tag} --build-arg HELM_VERSION=${helm} --build-arg KUSTOMIZE_VERSION=${kustomize_version} -t ${image}:${tag} .
-ARG KUBECTL_VERSION=1.29.2
+ARG KUBECTL_VERSION=1.34.0
 
 # Install curl
 RUN apk add --update --no-cache curl
