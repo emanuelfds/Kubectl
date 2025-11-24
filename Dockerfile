@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:3.22.2
 
 LABEL Description="Kubernetes tools for EKS - Emanuel Fernandes"
 
